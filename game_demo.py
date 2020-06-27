@@ -28,15 +28,15 @@ for k in range(1, 10):
 bg = pygame.image.load('bg.jpg')
 char = pygame.image.load('standing.png')
 
-# bulletSound = pygame.mixer.Sound("bullet.wav")
-# hitSound = pygame.mixer.Sound("hit.wav")
+bullet_sound = pygame.mixer.Sound("bullet.wav")
+hit_sound = pygame.mixer.Sound("hit.wav")
 
-# music = pygame.mixer.music.load("music.mp3")
+music = pygame.mixer.music.load("music.mp3")
 
 os.chdir(dir)
 
 # play music forever
-# pygame.mixer.music.play(-1)
+pygame.mixer.music.play(-1)
 
 class player(object):
     def __init__(self, x, y, w, h):
@@ -88,7 +88,6 @@ class projectile(object):
 
 class enemy(object):
 
-    # os.chdir(r'C:\Users\Turtle\OneDrive\Documents\VSCodeProjects\PyGame practice\media')
     os.chdir(filename)
     walk_right = []
     walk_left = []
@@ -96,12 +95,9 @@ class enemy(object):
     for o in range(1,12):
         walk_right.append(pygame.image.load('R{}E.png'.format(o)))
     
-
     for j in range(1,12):
         walk_left.append(pygame.image.load('L{}E.png'.format(j)))
-
-    # walkLeft = [pygame.image.load('L1E.png'), pygame.image.load('L2E.png'), pygame.image.load('L3E.png'), pygame.image.load('L4E.png'), pygame.image.load('L5E.png'), pygame.image.load('L6E.png'), pygame.image.load('L7E.png'), pygame.image.load('L8E.png'), pygame.image.load('L9E.png'), pygame.image.load('L10E.png'), pygame.image.load('L11E.png')]
-    # os.chdir(r'C:\Users\Turtle\OneDrive\Documents\VSCodeProjects\PyGame practice')
+        
     os.chdir(dir)
 
     def __init__(self, x, y, w, h, end):
@@ -191,6 +187,7 @@ while run:
     for bullet in bullets:
         if bullet.y - bullet.r < goblin.hitbox[1] + goblin.hitbox[3] and bullet.y + bullet.r > goblin.hitbox[1]:
             if bullet.x + bullet.r > goblin.hitbox[0] and bullet.x+ bullet.r < goblin.hitbox[0] + goblin.hitbox[2]:
+                hit_sound.play()
                 goblin.hit()
                 score += 1
                 bullets.pop(bullets.index(bullet))
@@ -211,6 +208,7 @@ while run:
 
     if keys[pygame.K_SPACE] and shoot_loop == 0:
        if len(bullets) < 5:
+           bullet_sound.play()
            bullets.append(projectile(round(jeff.x + jeff.w // 2), round(jeff.y + jeff.h // 2), 5, (0,0,0), facing ))
 
 
