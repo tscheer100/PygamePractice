@@ -71,7 +71,22 @@ class player(object):
         self.hitbox = (self.x + 17, self.y + 11, 29, 52)        
 
     def hit(self):
-        print("jeff is hit")
+        self.x = 60
+        self.y = 420
+        self.walk_count = 0
+        font1 = pygame.font.SysFont('comicsans', 100)
+        text = font1.render('-5', 1, (255, 0 ,0))
+        win.blit(text, (sw // 2 - (text.get_width()), sh // 2 - (text.get_height()) ))
+        pygame.display.update()
+        i = 0
+        while i < 100:
+            pygame.time.delay(10)
+            i += 1
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    i = 301
+                    pygame.quit()
+
 
 
 class projectile(object):
@@ -85,6 +100,7 @@ class projectile(object):
 
     def draw(self, win):
         pygame.draw.circle(win, self.color, (self.x, self.y), self.r)
+
 
 class enemy(object):
 
@@ -129,8 +145,6 @@ class enemy(object):
             pygame.draw.rect(win, (255, 0 ,0) , (self.hitbox[0], self.hitbox[1] - 20, 50, 10))  
             pygame.draw.rect(win, (0, 123, 0) , (self.hitbox[0], self.hitbox[1] - 20, 50 - (5 * (10 - self.health)), 10))    
         
-
-
     def move(self):
         if self.v > 0:
             if self.x  + self.v < self.path[1]:
@@ -152,7 +166,6 @@ class enemy(object):
             self.visible = False
         print("enemy is hit")
 
-
 def redrawGameWin():
     win.blit(bg, (0,0))
     text = font.render('Score: ' + str(score), 1, (255, 255, 255))
@@ -172,6 +185,11 @@ shoot_loop = 0
 run = True
 while run:
     clock.tick(27)
+
+    if jeff.hitbox[1] < goblin.hitbox[1] + goblin.hitbox[3] and jeff.hitbox[1] + jeff.hitbox[1] > goblin.hitbox[1]:
+        if jeff.hitbox[0] + jeff.hitbox[2] > goblin.hitbox[0] and jeff.hitbox[0]< goblin.hitbox[0] + goblin.hitbox[2]:
+            jeff.hit()
+            score -= 5
 
     if shoot_loop > 0:
         shoot_loop += 1
@@ -211,8 +229,6 @@ while run:
            bullet_sound.play()
            bullets.append(projectile(round(jeff.x + jeff.w // 2), round(jeff.y + jeff.h // 2), 5, (0,0,0), facing ))
 
-
-
     if keys[pygame.K_LEFT] and jeff.x > jeff.v:
         jeff.x -= jeff.v
         jeff.left = True
@@ -242,8 +258,6 @@ while run:
         else:
             jeff.is_jump = False
             jeff.jump_count = 10
-
     
     redrawGameWin()
-
 pygame.quit
