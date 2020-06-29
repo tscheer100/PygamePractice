@@ -18,6 +18,8 @@ dir = os.path.dirname(__file__)
 filename = os.path.join(dir, 'media')
 os.chdir(filename)
 
+
+# attribute iamge files for animation
 for i in range(1, 10):
     walk_right.append(pygame.image.load('R{}.png'.format(i)))
 
@@ -105,7 +107,7 @@ class projectile(object):
 
 
 class enemy(object):
-
+    # attribute image files specifically for enemy animation
     os.chdir(filename)
     walk_right = []
     walk_left = []
@@ -168,6 +170,7 @@ class enemy(object):
         else:
             self.visible = False
 
+
 def redrawGameWin():
     win.blit(bg, (0,0))
     text = font.render('Score: ' + str(score), 1, (255, 255, 255))
@@ -185,26 +188,32 @@ goblin = enemy(100, 420, 64, 64, 700)
 jeff = player(20,420, 64, 64)
 shoot_loop = 0
 run = True
+
 while run:
+    # set FPS
     clock.tick(27)
 
+    # allow collision damage unless goblin is dead
     if goblin.visible == True:
         if jeff.hitbox[1] < goblin.hitbox[1] + goblin.hitbox[3] and jeff.hitbox[1] + jeff.hitbox[1] > goblin.hitbox[1]:
             if jeff.hitbox[0] + jeff.hitbox[2] > goblin.hitbox[0] and jeff.hitbox[0] < goblin.hitbox[0] + goblin.hitbox[2]:
                 jeff.hit()
                 score -= 5
 
+    # delay to prevent multiple bullets being shot at a time
     if shoot_loop > 0:
         shoot_loop += 1
     if shoot_loop > 1:
         shoot_loop = 0
 
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
 
     keys = pygame.key.get_pressed()
 
+    # bullet damage against goblin
     for bullet in bullets:
         if goblin.visible == True:
             if bullet.y - bullet.r < goblin.hitbox[1] + goblin.hitbox[3] and bullet.y + bullet.r > goblin.hitbox[1]:
@@ -224,11 +233,11 @@ while run:
     else:
         facing = 1
 
+    #input data
     if keys[pygame.K_SPACE] and shoot_loop == 0:
        if len(bullets) < 5:
            bullet_sound.play()
            bullets.append(projectile(round(jeff.x + jeff.w // 2), round(jeff.y + jeff.h // 2), 5, (0,0,0), facing ))
-
     if keys[pygame.K_LEFT] and jeff.x > jeff.v:
         jeff.x -= jeff.v
         jeff.left = True
