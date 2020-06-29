@@ -54,6 +54,8 @@ class player(object):
         self.walk_count = 0
         self.standing = True
         self.hitbox = (self.x + 17, self.y + 11, 29, 52)
+
+        
     
     def draw(self, win):
         if self.walk_count + 1 >= 27:
@@ -93,6 +95,8 @@ class player(object):
 
 
 
+
+
 class projectile(object):
     def __init__(self, x, y, r, color, facing,):
         self.x = x
@@ -101,6 +105,11 @@ class projectile(object):
         self.color = color
         self.facing = facing
         self.v = 8
+        # retain direction based on direction jeff is facing.
+        if jeff.left:
+            self.facing = -1
+        else:
+            self.facing = 1
 
     def draw(self, win):
         pygame.draw.circle(win, self.color, (self.x, self.y), self.r)
@@ -223,8 +232,8 @@ while run:
                     score += 1
                     bullets.pop(bullets.index(bullet))
 
-        if bullet.x < sw and bullet.x > 0:
-            bullet.x += bullet.v * facing
+        if bullet.x < sw and bullet.x > 0: 
+            bullet.x += bullet.v * bullet.facing
         else:
             bullets.pop(bullets.index(bullet))
 
