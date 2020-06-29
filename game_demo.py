@@ -71,6 +71,8 @@ class player(object):
         self.hitbox = (self.x + 17, self.y + 11, 29, 52)        
 
     def hit(self):
+        self.is_jump = False
+        self.jump_count = 10
         self.x = 60
         self.y = 420
         self.walk_count = 0
@@ -144,6 +146,7 @@ class enemy(object):
             self.hitbox = (self.x + 17, self.y + 2, 31, 57)   
             pygame.draw.rect(win, (255, 0 ,0) , (self.hitbox[0], self.hitbox[1] - 20, 50, 10))  
             pygame.draw.rect(win, (0, 123, 0) , (self.hitbox[0], self.hitbox[1] - 20, 50 - (5 * (10 - self.health)), 10))    
+
         
     def move(self):
         if self.v > 0:
@@ -164,7 +167,6 @@ class enemy(object):
             self.health -= 1
         else:
             self.visible = False
-        print("enemy is hit")
 
 def redrawGameWin():
     win.blit(bg, (0,0))
@@ -186,10 +188,11 @@ run = True
 while run:
     clock.tick(27)
 
-    if jeff.hitbox[1] < goblin.hitbox[1] + goblin.hitbox[3] and jeff.hitbox[1] + jeff.hitbox[1] > goblin.hitbox[1]:
-        if jeff.hitbox[0] + jeff.hitbox[2] > goblin.hitbox[0] and jeff.hitbox[0]< goblin.hitbox[0] + goblin.hitbox[2]:
-            jeff.hit()
-            score -= 5
+    if goblin.visible == True:
+        if jeff.hitbox[1] < goblin.hitbox[1] + goblin.hitbox[3] and jeff.hitbox[1] + jeff.hitbox[1] > goblin.hitbox[1]:
+            if jeff.hitbox[0] + jeff.hitbox[2] > goblin.hitbox[0] and jeff.hitbox[0] < goblin.hitbox[0] + goblin.hitbox[2]:
+                jeff.hit()
+                score -= 5
 
     if shoot_loop > 0:
         shoot_loop += 1
@@ -203,21 +206,18 @@ while run:
     keys = pygame.key.get_pressed()
 
     for bullet in bullets:
-        if bullet.y - bullet.r < goblin.hitbox[1] + goblin.hitbox[3] and bullet.y + bullet.r > goblin.hitbox[1]:
-            if bullet.x + bullet.r > goblin.hitbox[0] and bullet.x+ bullet.r < goblin.hitbox[0] + goblin.hitbox[2]:
-                hit_sound.play()
-                goblin.hit()
-                score += 1
-                bullets.pop(bullets.index(bullet))
+        if goblin.visible == True:
+            if bullet.y - bullet.r < goblin.hitbox[1] + goblin.hitbox[3] and bullet.y + bullet.r > goblin.hitbox[1]:
+                if bullet.x + bullet.r > goblin.hitbox[0] and bullet.x+ bullet.r < goblin.hitbox[0] + goblin.hitbox[2]:
+                    hit_sound.play()
+                    goblin.hit()
+                    score += 1
+                    bullets.pop(bullets.index(bullet))
 
         if bullet.x < sw and bullet.x > 0:
             bullet.x += bullet.v * facing
         else:
             bullets.pop(bullets.index(bullet))
-
-    if jeff.y - jeff.h < goblin.hitbox[1] + goblin.hitbox[3] and jeff.y + jeff.h > goblin.hitbox[1]:
-        if jeff.x + jeff.w > goblin.hitbox[0] and jeff.x + jeff.w < goblin.hitbox[0] + goblin.hitbox[2]:
-            jeff.hit()
 
     if jeff.left:
         facing = -1
